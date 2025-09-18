@@ -1,12 +1,10 @@
 # Nombre del workflow
 name: Deploy to GitHub Pages
 
-# Se ejecuta cada vez que subes cambios a la rama 'main'
 on:
   push:
     branches: [ "main" ]
 
-# Permisos necesarios
 permissions:
   contents: read
   pages: write
@@ -23,20 +21,18 @@ jobs:
         uses: oven-sh/setup-bun@v1
 
       - name: Install dependencies
-        # Asegúrate de que tu proyecto está en una subcarpeta 'sightread'
-        working-directory: ./sightread
+        # Ya no se necesita working-directory
         run: bun install
 
       - name: Build project
-        working-directory: ./sightread
+        # Ya no se necesita working-directory
         run: VITE_PUBLIC_GA_ID='G-XXXXXXXXXX' bun run build
 
       - name: Upload artifact
-        # Esta es la sección que probablemente tenía el error de indentación
         uses: actions/upload-pages-artifact@v3
         with:
-          # La ruta al artefacto que se va a subir
-          path: ./sightread/build/client
+          # La ruta ahora es directamente desde la raíz
+          path: ./build/client
 
   deploy:
     needs: build
