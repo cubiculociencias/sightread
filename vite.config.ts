@@ -6,5 +6,5 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   base: '/sightread/',
-  plugins: [devtoolsJson(), tailwindcss(), reactRouter(), tsconfigPaths()],
+  plugins: [devtoolsJson(), tailwindcss(), reactRouter({ basename: '/sightread/' }), tsconfigPaths()],
 })
