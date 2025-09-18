@@ -1,0 +1,51 @@
+# Nombre del workflow
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        # --- CAMBIO AQUÍ ---
+        # Le decimos que trabaje dentro de la carpeta 'sightread'
+        working-directory: ./sightread
+        run: bun install
+
+      - name: Build project
+        # --- Y AQUÍ ---
+        working-directory: ./sightread
+        run: VITE_PUBLIC_GA_ID='G-XXXXXXXXXX' bun run build
+
+      - name: Upload artifact
+        # --- Y TAMBIÉN AQUÍ ---
+        working-directory: ./sightread
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # La ruta es relativa al working-directory, así que sigue siendo correcta
+          path: ./build/client
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
